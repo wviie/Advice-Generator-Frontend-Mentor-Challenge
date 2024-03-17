@@ -13,19 +13,24 @@ const clearElementText = (element) => {
 
 const fetchAdvice = async() => {
     try{
-    const response = await fetch(API_URL);
-    const adviceObj = await response.json();
-    const advice = adviceObj.slip.advice;
-    const adviceId = adviceObj.slip.id;
+        // set random id
+        let API_URL_ID = API_URL + `/${Math.floor(Math.random() * 224).toString()}`;
+        const response = await fetch(API_URL_ID);
+        if (!response.ok) throw 'Error';
+        const adviceObj = await response.json();
+        // if advice doesn't exist for a certain id then recall the function
+        if (adviceObj.message) return fetchAdvice();
+        const advice = adviceObj.slip.advice;
+        const adviceId = adviceObj.slip.id;
 
-    clearElementText(adviceElement);
-    clearElementText(adviceIdElement);
+        clearElementText(adviceElement);
+        clearElementText(adviceIdElement);
 
-    addTextToElement(adviceElement, advice);
-    addTextToElement(adviceIdElement, adviceId);
+        addTextToElement(adviceElement, advice);
+        addTextToElement(adviceIdElement, adviceId);
     }
     catch(err){
-        console.log(err);
+        addTextToElement(adviceElement, err);
     }
 }
 
